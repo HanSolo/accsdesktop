@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<title>AccsDesktop</title>
+    <link rel="stylesheet" href="leaflet.css" type="text/css" charset="utf-8"/>
+    <script>L_PREFER_CANVAS = true; </script>
+    <script type="text/javascript" src="leaflet.js"></script>
+    <script type="text/javascript" src="leaflet-providers.js"></script>
+</head>
+<style type="text/css">
+    html { height: 100% }
+    body { height: 100%; margin: 0px; padding: 0px; }
+    #map { width: 100%; height: 100%; }
+</style>
+<body>
+<div id="map" style="width: 100%; height: 100%; position: relative;" class="leaflet-container leaflet-fade-anim" tabindex="0">
+
+	<script type="text/javascript">
+        var map = L.map('map').setView([0, 0], 15);
+		map.attributionControl.setPrefix('');
+        map.removeControl(map.zoomControl);
+        map.scrollWheelZoom.disable();
+        new L.control.zoom({position: 'bottomright'}).addTo(map);
+
+        // TileLayer
+        var hydda              = L.tileLayer.provider('Hydda.Full', {attribution: ''});
+        var esriWorldImagery   = L.tileLayer.provider('Esri.WorldImagery', {attribution: ''});
+
+        hydda.addTo(map);
+
+        var Poi                = L.Class.extend({
+                                                        initialize: function (title, marker) {
+                                                            this.title  = title;
+                                                            this.marker = marker;
+                                                        },
+                                                        title : this.title,
+                                                        marker: this.marker
+                                                    });
+        var markerArray        = new Array();
+
+        L.control.layers({
+            "Hydda"         : hydda,
+            "World Imagery" : esriWorldImagery
+        }, {},{position:'topright'}).addTo(map);
+        L.control.scale({metric: true, imperial: false}).addTo(map);
+
+
+        document.panTo             = function(x, y) {
+            map.panTo([x, y]);
+        };
+
+		document.goToLocation      = function(x, y, acc, follow) {
+		    accuracy = acc;
+            document.showOnlineMarker();
+            onlineMarker.setLatLng([x, y]);
+            onlineMarker.update();
+            accuracyCircle.setLatLng([x, y]);
+            accuracyCircle.setRadius(accuracy);
+            onlineMarker._icon.title = 'Tracked Object\nAccuracy: ' + accuracy.toFixed(1) + 'm';
+            if (follow) map.panTo([x, y]);
+		};
+
+        document.setOnline         = function() {
+            if (onlineMarker.opacity < 1.0) {
+                document.showOnlineMarker();
+            }
+        };
+        document.setOffline        = function() {
+            document.hideOnlineMarker();
+        };
+
+        document.moveMarker        = function(userName, userInfo, upToDate, x, y) {
+            var length = markerArray.length;
+            for (var i = 0 ; i < length ; i++) {
+                if (markerArray[i].title === userName) {
+                    markerArray[i].marker.setLatLng([x, y]);
+                    markerArray[i].marker.update();
+                    markerArray[i].marker.unbindPopup();
+                    markerArray[i].marker.setIcon(L.icon({iconUrl: upToDate === 'true' ? 'location.png' : 'oldLocation.png', iconSize: [20, 20], iconAnchor: [10, 10]}));
+                    markerArray[i].marker.bindPopup('<p>'+ userInfo + '</p>');
+                    return;
+                }
+            }
+
+            var marker = L.marker([x, y], {
+                icon     : L.icon({iconUrl: upToDate === 'true' ? 'location.png' : 'oldLocation.png', iconSize: [20, 20], iconAnchor: [10, 10]}),
+                draggable: false,
+                title    : userName
+            }).addTo(map);
+
+            marker.bindPopup('<p>'+ userInfo + '</p>');
+
+            var poi = new Poi(userName, marker);
+            markerArray.push(poi);
+        };
+
+        document.panToMarker       = function(userName) {
+            for (var i = 0 ; i < markerArray.length ; i++) {
+                if (markerArray[i].title === userName) {
+                    map.panTo(markerArray[i].marker.getLatLng());
+                    return;
+                }
+            }
+        };
+        document.removeMarker      = function(userName) {
+            var index = -1;
+            for (var i = 0 ; i < markerArray.length ; i++) {
+                if (markerArray[i].title === userName) {
+                    map.removeLayer(markerArray[i].marker); // removes Marker from map
+                    index = i;
+                    break;
+                }
+            }
+            if (index > -1) {
+                markerArray.splice(index, 1);
+            }
+        };
+        document.clearMarkers      = function() {
+            while(markerArray.length > 0) { markerArray.pop(); }
+        };
+        document.zoomToRunner      = function() {
+            map.setZoom(17);
+            map.panTo(onlineMarker.getLatLng());
+        };
+
+        document.showOnlineMarker  = function() {
+            onlineMarker.setOpacity(1.0);
+        };
+        document.hideOnlineMarker  = function() {
+            onlineMarker.setOpacity(0.3);
+        };
+
+        document.removePois        = function() {
+            for (var i = 0 ; i < poiArray.length ; i++) {
+                document.removeLayer(poiArray[i]); // removes poi from map
+            }
+        };
+        document.clearPois         = function() {
+            while(poiArray.length > 0) { poiArray.pop(); }
+        };
+
+        document.addLayer          = function(overlay) {
+            overlay.addTo(map);
+        };
+        document.removeLayer       = function(overlay) {
+            map.removeLayer(overlay);
+        };
+    </script>
+
+</div>
+</body>
+</html>

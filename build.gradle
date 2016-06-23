@@ -1,0 +1,41 @@
+group 'eu.hansolo'
+version '1.0-SNAPSHOT'
+
+apply plugin: 'java'
+apply from  : 'http://dl.bintray.com/content/shemnon/javafx-gradle/8.1.1/javafx.plugin'
+
+sourceCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile fileTree(include: ['*.jar'], dir: 'libs')
+    compile 'com.googlecode.json-simple:json-simple:1.1'
+    compile 'com.squareup.okhttp3:okhttp:3.3.1'
+}
+
+javafx {
+    appID     = 'AccsDesktop'
+    appName   = 'AccsDesktop'
+    mainClass = 'eu.hansolo.accs.Main'
+
+    icons {
+        shortcut = [
+                'icons/icon-16.png', 'icons/icon-16@2x.png',
+                'icons/icon-32.png', 'icons/icon-32@2x.png',
+                'icons/icon-64.png',
+                'icons/icon-128.png', 'icons/icon-128@2x.png',
+                'icons/icon-256.png', 'icons/icon-256@2x.png',
+                'icons/icon-512.png', 'icons/icon-512@2x.png'
+        ]
+        volume = shortcut
+        setup = 'icons/icon-32.png'
+    }
+
+    jfxDeploy {
+        vendor    = 'Gerrit Grunwald'
+        packaging = 'image'
+    }
+}

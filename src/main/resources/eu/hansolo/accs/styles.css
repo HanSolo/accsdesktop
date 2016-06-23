@@ -1,0 +1,85 @@
+.root {
+
+}
+
+.background {
+    -fx-background-color: rgba(0, 0, 0, 0.75);
+}
+
+.overlay {
+    -fx-background-color: rgba(0, 0, 0, 0.7);
+}
+
+.value {
+    -fx-fill     : white;
+    -fx-font-size: 20px;
+    -fx-effect   : dropshadow(two-pass-box, rgba(0, 0, 0, 0.65), 3, 0, 0, 0);
+}
+.unit {
+    -fx-fill     : gainsboro;
+    -fx-font-size: 12px;
+    -fx-effect   : dropshadow(two-pass-box, rgba(0, 0, 0, 0.65), 3, 0, 0, 0);
+}
+
+.person-name {
+    -fx-font-family: Lato-Light;
+    -fx-text-fill  : white;
+    -fx-font-size  : 10px;
+    -fx-effect     : null;
+}
+
+
+/*******************************************************************************
+ *                                                                             *
+ * ListView                                                                    *
+ *                                                                             *
+ ******************************************************************************/
+.list-view {
+    -fx-background-color: transparent;
+}
+.list-view .scroll-bar:horizontal .increment-arrow,
+.list-view .scroll-bar:horizontal .decrement-arrow,
+.list-view .scroll-bar:horizontal .increment-button,
+.list-view .scroll-bar:horizontal .decrement-button {
+    -fx-padding:0;
+}
+
+.list-cell .label {
+    -fx-text-fill: gray;
+}
+.list-cell:selected .label {
+    -fx-text-fill: white;
+}
+
+.list-cell:filled:selected:focused,
+.list-cell:filled:selected {
+    -fx-background-color: transparent;
+    -fx-text-fill       : white;
+}
+.list-cell:even {
+    -fx-cell-hover-color: transparent;
+    -fx-background-color: transparent;
+}
+.list-cell:odd {
+    -fx-cell-hover-color: transparent;
+    -fx-background-color: transparent;
+}
+.list-cell:filled:hover {
+    -fx-cell-hover-color: transparent;
+    -fx-background-color: transparent;
+}
+
+.active-marker {
+    -marker-fill: #3f51b5;
+    -fx-fill    : linear-gradient(to top, -marker-fill, derive(-marker-fill, 50%));
+    -fx-stroke  : derive(-marker-fill, -20%);
+}
+.old-marker {
+    -marker-fill: #9e9e9e;
+    -fx-fill    : linear-gradient(to top, -marker-fill, derive(-marker-fill, 50%));
+    -fx-stroke  : derive(-marker-fill, -20%);
+}
+.last-update {
+    -fx-font-size: 10;
+    -fx-padding  : 1 0 1 16;
+}
